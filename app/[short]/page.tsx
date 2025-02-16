@@ -6,11 +6,18 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-export default async function ShortRedirectPage({ params }: { params: { short: string } }) {
+// ✅ Explicitly type the component props
+interface ShortRedirectProps {
+  params: {
+    short: string;
+  };
+}
+
+export default async function ShortRedirectPage({ params }: ShortRedirectProps) {
   const originalUrl = (await redis.get(params.short)) as string | null;
 
   if (originalUrl) {
-    redirect(originalUrl); // ✅ Use `redirect()` instead of Next.js `redirect` object
+    redirect(originalUrl);
   }
 
   return <p>URL not found.</p>;
